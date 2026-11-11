@@ -76,7 +76,7 @@ $$\vec{H}_\text{sol} (x) = \int_{x_0}^{x_0+l} \frac{NIR^2}{2l( R^2 + (x - dx')^2
 
 which requires a single computation operation, instead of $N$. We obtain the final form, which is the standard *finite coil* potential
 
-$$\boxed{\vec{H}_\text{sol} (x; \, x_0,N,l,I,R) = \frac{NI}{2l} \left [ \frac{x_0 + l - x}{\sqrt{R^2+(x_0+l-x)^2}} - \frac{x_0 - x}{\sqrt{R^2+(x_0-x)^2}} \right ] }$$
+$$\boxed{\vec{H}_\text{sol} (x; x_0,N,l,I,R) = \frac{NI}{2l} \left [ \frac{x_0 + l - x}{\sqrt{R^2+(x_0+l-x)^2}} - \frac{x_0 - x}{\sqrt{R^2+(x_0-x)^2}} \right ] }$$
 
 ## 2. Dynamics
 
@@ -102,25 +102,16 @@ where $\mu$ is the net permeability of the medium $\mu = \mu_0 \mu_r$ - usually 
 
 $$ 
 \Rightarrow \vec{F}(x) =  \frac{\chi \mu  V N^2 I^2 }{2l^2} 
-
 \left ( 
 \frac{(l-x+x_0)^2}{ ((l-x+x_0)^2+R^2)^{3/2} }
-    
-- \frac{1}{ \sqrt{(l-x+x_0)^2+R^2} }
-
-- \frac{(x_0-x)^2}{ ((x-x_0)^2+R^2)^{3/2} }
-
-+ \frac{1}{ \sqrt{(x - x_0)^2+R^2} }
+-\frac{1}{ \sqrt{(l-x+x_0)^2+R^2} }
+-\frac{(x_0-x)^2}{ ((x-x_0)^2+R^2)^{3/2} }
++\frac{1}{ \sqrt{(x - x_0)^2+R^2} }
 \right)
-
-
 \left (
 \frac{l-x+x_0}{ \sqrt{(l-x+x_0)^2+R^2}}
-
-- \frac{x-x_0}{ \sqrt{(x-x_0)^2+R^2} } 
-
+-\frac{x-x_0}{ \sqrt{(x-x_0)^2+R^2} } 
 \right)
-
 \hat{x}
 $$
 
@@ -140,23 +131,16 @@ Once the demagnetizing factor was determined, it can be plugged into the force f
 
 $$ 
 \boxed {
-\Rightarrow \vec{F}(x; \, \gamma, \mu, m, \rho, N,l,I,R) = \frac{\mu  m N^2 I^2 }{2\gamma\rho l^2}
-
+\Rightarrow \vec{F}(x; \gamma, \mu, m, \rho, N,l,I,R) = \frac{\mu  m N^2 I^2 }{2\gamma\rho l^2}
 \left ( 
 \frac{(l-x)^2}{ ((l-x)^2+R^2)^{3/2} }
-    
-- \frac{1}{ \sqrt{(l-x)^2+R^2} }
-
-- \frac{x^2}{ (x^2+R^2)^{3/2} }
-
-+ \frac{1}{ \sqrt{x^2+R^2} }
+-\frac{1}{ \sqrt{(l-x)^2+R^2} }
+-\frac{x^2}{ (x^2+R^2)^{3/2} }
++\frac{1}{ \sqrt{x^2+R^2} }
 \right) 
-
 \left ( 
 \frac{l-x}{ \sqrt{(l-x)^2+R^2}}
-
-+ \frac{x}{ \sqrt{x^2+R^2} }
-
++\frac{x}{ \sqrt{x^2+R^2} }
 \right) \hat{x}
 } 
 $$
@@ -180,7 +164,7 @@ $$
 
 Another ansatz which avoids heavy geometric calculations and tracking of parameters exploits that $U$ also equals the magnetic potential stored in the coil. Changes in the magnetic energy manifest in mechanical work i.e. accelerating the projectile which drains the coil energy stronger the closer it gets. Revisiting the definition of the reluctant force leads to
 
-$$ F(x) = \nabla W_\text{mag} = \nabla \left ( \frac{1}{2} \mathcal{L}(x) \cdot I^2 \right ) = -\frac{1}{2} \mathcal{L}'(x) \cdot I^2$$
+$$F(x) = \nabla W_\text{mag} = \nabla \left ( \frac{1}{2} \mathcal{L}(x) \cdot I^2 \right ) = -\frac{1}{2} \mathcal{L}'(x) \cdot I^2$$
 
 which is a short elegant description and directly applicable with the caveat that the response $\mathcal{L}'(x)$ (i.e. the shape of $\mathcal{L}$ in dep. to projectile position) must be known. In trade off for the computational ease we loose accuracy. Note that the negative sign is not necessary as the potential is not conservative. The force is sensitive to fitting the correct inductance shape, which is merely approximated. Thus this ansatz alone sacrifices the fine, localized field structures that a full Biot-Savart integration yields. Nonetheless, the approach is interesting as all the previous geometry and material constants such as susceptibility vanish and the projectile motion is being purely governed by the inductance profile - similar to a potential valley governing the equations of motion.
 
@@ -196,11 +180,11 @@ $$\Phi = \frac{\mathcal{L}}{N}\cdot I.$$
 
 The self-induced voltage building up in the coil is given by the change of magnetic flux in time and always counteracts it's cause (Lenz's law)
 
-$$ V_L = -N \frac{d \Phi}{ dt} = - \frac{d (\mathcal{L} \cdot I)}{dt} = - \left ( \frac{d\mathcal{L}}{dt}I+\mathcal{L}\frac{dI}{ dt} \right )$$
+$$V_L = -N \frac{d \Phi}{ dt} = - \frac{d (\mathcal{L} \cdot I)}{dt} = - \left ( \frac{d\mathcal{L}}{dt}I+\mathcal{L}\frac{dI}{ dt} \right )$$
 
 since $\mathcal{L}$ changes with the projectile position (canonical variable which depends on time), we need to expand the composite dependence using the chain rule
 
-$$ \Rightarrow - V_L = \mathcal{L}\frac{dI}{ dt} + \frac{d\mathcal{L}}{dx} \frac{dx}{dt} I = \mathcal{L} \dot{I} + \mathcal{L}'Iv$$
+$$\Rightarrow - V_L = \mathcal{L}\frac{dI}{ dt} + \frac{d\mathcal{L}}{dx} \frac{dx}{dt} I = \mathcal{L} \dot{I} + \mathcal{L}'Iv$$
 
 where the first term is just the inductance definition $U=\mathcal{L}\dot{I}$ from Faraday's law of induction. The second term comes from the fact that $L$ is not constant, it varies due to moving projectile perturbing the field as it gets closer to the coil center. Hence, the spatial derivative does not describe the shape of $L$ along the coil axis but instead the inductive response to the change of the projectile position i.e. if the projectile is close to the coil center its movement will impact the inductance stronger than when its far from the coil. When the projectile comes near the coil it starts to raise the coil inductivity $\mathcal{L}$ as it provides a more favorable path for the field lines. This will reduce the current and lead to a damping effect - *Motional EMF*. Since the second part scales directly with velocity $v$, a fast flying projectile can make this term become significant where perturbation becomes comparable to the expected ideal values. 
 
@@ -229,7 +213,7 @@ $$\Pi(x) = \frac{1}{1+\text{exp} \left ( - \frac{x}{\sigma} \right ) } - \frac{1
 
 which is brilliant as its a single closed-form, its differentiable across the whole domain and it is fairly easy to differentiate. The corr. derivative for the logistics function can be expressed in a self-related form as $\frac{d}{dx}S(x) = S(x)(1-S(x))$ which is handy to express the gradient in a compact form
 
-$$\Pi'(x) = \frac{d}{dx} \left [  S \left ( \frac{x}{\sigma} \right ) - S \left ( \frac{x-l}{\sigma}\right ) \right] =  S \left ( \frac{x}{\sigma} \right ) \cdot \left [ 1-S \left ( \frac{x}{\sigma} \right ) \right ] \,\, - \,\, S \left ( \frac{x-l}{\sigma} \right ) \cdot \left [ 1-S \left ( \frac{x-l}{\sigma} \right ) \right ] .$$
+$$\Pi'(x) = \frac{d}{dx} \left [  S \left ( \frac{x}{\sigma} \right ) - S \left ( \frac{x-l}{\sigma}\right ) \right] =  S \left ( \frac{x}{\sigma} \right ) \cdot \left [ 1-S \left ( \frac{x}{\sigma} \right ) \right ] -  S \left ( \frac{x-l}{\sigma} \right ) \cdot \left [ 1-S \left ( \frac{x-l}{\sigma} \right ) \right ] .$$
 
 <br>
 
@@ -251,25 +235,25 @@ An alternative derivation for the inductance profile can be obtained from the el
 
 $$
 
-\Rightarrow F_\text{Reluctance} \overset{!}{=} F_\text{Biot-Savart} \newline \, \newline
+\Rightarrow F_\text{Reluctance} \overset{!}{=} F_\text{Biot-Savart} \newline  \newline
 
 \Leftrightarrow \frac{1}{2} \mathcal{L}'(x) \cdot I^2 = F_\text{BS}
 
-\newline \,
+\newline s
 \newline
 $$
 
 Finally we can solve for $\mathcal{L}'(x)$ and re-use the force which was pre-calculated with the Biot-Savart approach
 
 $$
-\boxed {\Leftrightarrow \mathcal{L}'(x) = \frac{2}{I^2} \cdot F_\text{Biot-Savart} (x; \,\gamma, \mu, m, \rho, N, l, I, R) }
+\boxed {\Leftrightarrow \mathcal{L}'(x) = \frac{2}{I^2} \cdot F_\text{Biot-Savart} (x; \gamma, \mu, m, \rho, N, l, I, R) }
 $$
 
 
 For the inductance profile simply integrate over the derivative which leads back to the cumulative work applied to the projectile
 
 
-$$\Rightarrow \mathcal{L}(x) = \int_{-\infty}^{\,x} d\tilde{x} \mathcal{L}'(\tilde{x}) = \frac{2}{I^2} \int_{-\infty}^{\,x} d\tilde{x} F_{BS}(\tilde{x}) = \frac{2W_\text{mag}(x)}{I^2} + \mathcal{L}_\text{air}$$
+$$\Rightarrow \mathcal{L}(x) = \int_{-\infty}^{x} d\tilde{x} \mathcal{L}'(\tilde{x}) = \frac{2}{I^2} \int_{-\infty}^{x} d\tilde{x} F_{BS}(\tilde{x}) = \frac{2W_\text{mag}(x)}{I^2} + \mathcal{L}_\text{air}$$
 
 the obligatory constant $\mathcal{L}_\text{air}$ which arises from the integration can be interpreted as the physical boundary when the projectile is far away i.e. $|x|\rightarrow\infty$ while $\frac{2W_\text{mag}}{I^2}$ only describes the total work to magnetize and accelerate the projectile. 
 
@@ -293,7 +277,7 @@ In the last step we separated the variables to show how the time derivative of $
 
 For discrete timesteps $\Delta t$ the time derivative can be separated into the deltas
 
-$$ \Rightarrow \Delta I = \frac{V_{cc} - (\mathcal{R} +\mathcal{L}'v)I}{\mathcal{L}} \,\, \Delta t$$
+$$ \Rightarrow \Delta I = \frac{V_{cc} - (\mathcal{R} +\mathcal{L}'v)I}{\mathcal{L}}  \Delta t$$
 
 
 This update happens in each quasi-stationary integrator step, where $I, \mathcal{L}'$ and $\mathcal{L}$ are constant within each $\Delta t$ interval and $I$ refers to the most recent observation i. e. $I_\text{old}.$ The homogeneous part of the equation indicates an exponential solution for $I$, and it shows how the change in current is dampened by the inductance in the denominator. Also, we find that the motional EMF leads to damping perturbation which scale linearl with the current, the spatial inductance response slope, and the projectile velocity.
@@ -317,7 +301,7 @@ $$\Rightarrow V_{cc} (t) \approx V_{0} - \frac{1}{C} \sum_{t}^{} I_t\cdot \Delta
 
 Numerically, we initialize the voltage $V_{t} \leftarrow V_0$ and after every integration iteration we subtract the small voltage changes based on the outflow/inflow of stationary charge increments
 
-$$\boxed {V_{cc} (t) \approx V_t = V_{t-1} - \frac{I_{t-1}\cdot \Delta t}{C}} \,\,\,\, \wedge \,\,\,\, V_{t=0} \equiv V_0  $$
+$$\boxed {V_{cc} (t) \approx V_t = V_{t-1} - \frac{I_{t-1}\cdot \Delta t}{C}}  \wedge  V_{t=0} \equiv V_0  $$
 
 ## 4. Kinematics
 
@@ -325,7 +309,7 @@ To accelerate the projectile along different stages we need to prevent magnetic 
 
 An optimal integrator choice which minimizes the bias (to first order) and conserves energies even after large number of time steps is the *leap frog* integrator. We initialize the acceleration, position and velocity.
 
-$$x_t=x_0; \,\,\, a=a_{mag}(x_t)=\frac{F}{m}(x_t; \, \chi, \mu, \rho, N, L, I, R); \,\,\, v_{1/2}=v_0 + a\cdot \frac{\Delta t}{2} $$
+$$x_t=x_0;  a=a_{mag}(x_t)=\frac{F}{m}(x_t;  \chi, \mu, \rho, N, L, I, R);  v_{1/2}=v_0 + a\cdot \frac{\Delta t}{2} $$
 
 where we define the start point (negative distance to coil), the start velocity (at first stage 0) and the acceleration as the force term evaluated at 0. This initialization step can be applied to any stage with the respective $x_0$ and $v_0$. The $v_0$ can be derived from the final velocity (at time $T$ - stage time) of the previous stage i. e. $v_{0,S} = v_{T,S-1}$.
 
@@ -387,8 +371,8 @@ $$ \mathcal{L}_t = \frac{\mu m N^2}{2 \rho l^2} \left [ \frac{l - x_t}{\sqrt{R^2
 
 and gradient
 
-$$ \mathcal{L}'_t = 0 \,\,\,\text{ if }\,\,\, t=0$$
-$$ \mathcal{L}'_t = \frac{2m}{I^2} \cdot a_{t-1} \,\,\,\text{ if }\,\,\, t>0$$
+$$ \mathcal{L}'_t = 0 \text{ if } t=0$$
+$$ \mathcal{L}'_t = \frac{2m}{I^2} \cdot a_{t-1} \text{ if } t>0$$
 
 
 
@@ -396,7 +380,7 @@ $$ \mathcal{L}'_t = \frac{2m}{I^2} \cdot a_{t-1} \,\,\,\text{ if }\,\,\, t>0$$
 ---
 From the inductance and it's slope compute the change in current and update the coil current
 
-$$ \Delta I = \frac{V_{cc} - (\mathcal{R} +\mathcal{L}_t'v) \cdot I_{t-1}}{\mathcal{L}_t} \,\, \Delta t , \text{ where }  I_{t-1} = I_0 \text{ for the first run}$$
+$$ \Delta I = \frac{V_{cc} - (\mathcal{R} +\mathcal{L}_t'v) \cdot I_{t-1}}{\mathcal{L}_t}  \Delta t , \text{ where }  I_{t-1} = I_0 \text{ for the first run}$$
 
 $$ I_t \leftarrow I_{t-1} + \Delta I $$
 
@@ -410,12 +394,12 @@ otherwise just proceed to the next step.
 ---
 Knowing the exact current in the coil allows to finally compute the acceleration
 
-$$a_t \, \leftarrow \, \frac{1}{m} \cdot F(x_t; \, \gamma, \mu, \rho, N,L,I_t,R)$$
+$$a_t  \leftarrow  \frac{1}{m} \cdot F(x_t;  \gamma, \mu, \rho, N,L,I_t,R)$$
 
 the result is used to compute the change in velocity (boosting)
 
-$$\text{if $t=0$: } \,\, \,  v_{t+1/2} \leftarrow v_{0} + a_t\cdot \Delta t / 2$$
-$$\text{else: } \,\, \,  v_{t+1/2} \leftarrow v_{t-1/2} + a_t\cdot \Delta t$$
+$$\text{if $t=0$: }    v_{t+1/2} \leftarrow v_{0} + a_t\cdot \Delta t / 2$$
+$$\text{else: }    v_{t+1/2} \leftarrow v_{t-1/2} + a_t\cdot \Delta t$$
 
 and analogously update the position for the next iteration (drifting)
 
