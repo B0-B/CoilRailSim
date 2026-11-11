@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solenoid Projectile Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <style>
+        body { font-family: sans-serif; margin: 0; line-height: 1.6; background-color: #232323; color:antiquewhite}
+        .input-group { margin-bottom: 10px; display: flex; align-items: center; }
+        .input-group label { width: 250px; }
+        .input-group input { padding: 5px; width: 250px; }
+        .symbol { font-style: italic; font-family: serif; font-weight: bold; width: 30px; display: inline-block; };
+        .panel {background: #0f0f0f; padding: 10px; color: #fff; display: flex; justify-content: center; align-items: center; flex-direction: column;}
+    </style>
+</head>
+<body>
+    <div id="app-workspace" class="flex-d" style="width: 100%;">
+
+        <div class="row no-gutters m-0">
+            <!-- Inputs Menu -->
+            <div id="inputs" class="col-3" style="padding: 10px;">
+                <h2>Projectile Parameters</h2>
+                <form id="projectileForm">
+                    <!-- Material Selection -->
+                    <div class="input-group">
+                        <label><span class="symbol"></span> Projectile Material:</label>
+                        <select id="projectile_material">
+                            <option value="iron">Iron (Soft)</option>
+                            <option value="steel_carbon">Steel (Carbon)</option>
+                            <option value="steel_stainless">Steel (Magnetic Stainless)</option>
+                            <option value="nickel">Nickel</option>
+                            <option value="cobalt">Cobalt</option>
+                            <option value="permalloy">Permalloy (Ni-Fe)</option>
+                            <option value="gadolinium">Gadolinium</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Shape Selection -->
+                    <div class="input-group">
+                        <label><span class="symbol">γ</span> Demagnetizing Factor:</label>
+                        <input type="text" id="gamma" step="any" value="0.07" lang="en-US">
+                    </div>
+
+                    <!-- x: Position -->
+                    <div class="input-group" lang="en-US">
+                        <label><span class="symbol">x</span> Distance from coil center (m):</label>
+                        <input type="text" id="position" step="any" value="0.03" lang="en-US">
+                    </div>
+
+                    <!-- v0: Start Velocity -->
+                    <div class="input-group">
+                        <label><span class="symbol">v</span> Start Velocity (m/s):</label>
+                        <input type="text" id="velocity" step="any" value="0.0" lang="en-US">
+                    </div>
+
+                    <!-- χ: Susceptibility -->
+                    <div class="input-group">
+                        <label><span class="symbol">&chi;</span> Susceptibility (&chi;):</label>
+                        <input type="text" id="susceptibility" step="any" value="auto" lang="en-US">
+                    </div>
+
+                    <!-- m: Mass -->
+                    <div class="input-group">
+                        <label><span class="symbol">m</span> Projectile mass (kg):</label>
+                        <input type="text" id="mass" step="any" value="0.00306" lang="en-US">
+                    </div>
+
+                    <!-- ρ: Density -->
+                    <div class="input-group">
+                        <label><span class="symbol">&rho;</span> Projectile density (kg/m&sup3;):</label>
+                        <input type="text" id="density" step="any" value="auto" lang="en-US">
+                    </div>
+
+
+                </form>
+
+                <h2>Solenoid Parameters</h2>
+                <form id="solenoidForm">
+
+                    <!-- Material Selection -->
+                    <div class="input-group">
+                        <label><span class="symbol"></span> Wire Material:</label>
+                        <select id="wire_material">
+                            <option value="copper">Copper</option>
+                            <option value="silver">Silver</option>
+                            <option value="gold">Gold</option>
+                            <option value="aluminum">Aluminum</option>
+                            <option value="tungsten">Tungsten</option>
+                            <option value="zinc">Zinc</option>
+                            <option value="nickel">Nickel</option>
+                            <option value="iron">Iron</option>
+                            <option value="platinum">Platinum</option>
+                            <option value="tin">Tin</option>
+                            <option value="steel_carbon">Steel (Carbon)</option>
+                            <option value="lead">Lead</option>
+                            <option value="manganin">Manganin</option>
+                            <option value="constantan">Constantan</option>
+                            <option value="steel_stainless">Steel (Stainless)</option>
+                            <option value="nichrome">Nichrome</option>
+                        </select>
+                    </div>
+
+                    <!-- Wire Gauge Selection -->
+                    <div class="input-group">
+                        <label><span class="symbol">&theta;</span>Wire thickness (mm):</label>
+                        <input type="text" id="thickness" step="any" value="0.5" lang="en-US">
+                    </div>
+
+                    <!-- μ: Permeability -->
+                    <div class="input-group">
+                        <label><span class="symbol">&mu;</span> Base Permeability (N/A²):</label>
+                        <input type="text" id="permeability" step="any" value="1.26e-6" lang="en-US">
+                    </div>
+
+                    <!-- N: Wire turns -->
+                    <div class="input-group">
+                        <label><span class="symbol">N</span> Number of wire turns:</label>
+                        <input type="text" id="turns" step="1" value="300" lang="en-US">
+                    </div>
+
+                    <!-- L: Coil length -->
+                    <div class="input-group">
+                        <label><span class="symbol">L</span> Coil length (m):</label>
+                        <input type="text" id="length" step="any" value="0.02" lang="en-US">
+                    </div>
+
+                    <!-- R: Radius -->
+                    <div class="input-group">
+                        <label><span class="symbol">R</span> Coil radius (m):</label>
+                        <input type="text" id="radius" step="any" value="0.00564" lang="en-US">
+                    </div>
+
+                    <!-- Res: External Resistance -->
+                    <div class="input-group">
+                        <label><span class="symbol">Res</span> External Resistor (&Omega;):</label>
+                        <input type="text" id="resistor" step="any" value="3" lang="en-US">
+                    </div>
+
+                    <!-- V: Source voltage -->
+                    <div class="input-group">
+                        <label><span class="symbol"></span> Voltage Source:</label>
+                        <select id="voltage_source">
+                            <option value="capacitor_source">Capacitor</option>
+                            <option value="const_source">Constant voltage source</option>
+                        </select>
+                    </div>
+
+                    <!-- capacitance will only appear if capacitor is selected -->
+                    <div class="input-group" id="capacitance_group" style="display: none;">
+                        <label><span class="symbol">C</span>Capacitance (F):</label>
+                        <input type="text" id="capacitance_value" value="0.1">
+                    </div>
+
+                    <div class="input-group" id="vcc_group" style="display: none;">
+                        <label><span class="symbol">VCC</span> Source voltage (V):</label>
+                        <input type="text" id="vcc" step="any" value="24" lang="en-US">
+                    </div>
+
+                    
+                </form>
+                <h2>Simulation Parameters</h2>
+                <form id="simulationForm">
+                    <div class="input-group">
+                        <label><span class="symbol">&Delta;t</span> Time step (s):</label>
+                        <input type="text" id="timestep" step="any" value="0.00001" lang="en-US">
+                    </div>
+                    <div class="input-group">
+                        <label><span class="symbol"></span> Render after every n steps:</label>
+                        <input type="text" id="render-steps" step="any" value="10" lang="en-US">
+                    </div>
+                </form>
+                <button type="button" onclick="calculate()">Calculate</button>
+            </div>
+            
+            <!-- Timeseries Chart Area -->
+            <div id="charts" class="col-9 p-10">
+                <div class="flex-d">
+                    <div class="row-11 no-gutters" style="width: 100%; margin: auto;">
+                        <canvas id="timeseries-chart"></canvas>
+                    </div>
+                    <div id="result-panel-section" class="row-1 no-gutters" style="width: 100%; margin: auto; display: inline-flex;">
+                        <div class="col-3 panel">
+                            <p>Exit Velocity</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="exit-vel-panel">0</h2><h3 style="padding-left: 5px;">m/s</h3>
+                            </div>
+                        </div>
+                        <div class="col-3 panel">
+                            <p>Total Latency</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="total-lat-panel">0</h2><h3 style="padding-left: 5px;">s</h3>
+                            </div>
+                        </div>
+                        <div class="col-3 panel">
+                            <p>Max. Current</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="max-current-panel">0</h2><h3 style="padding-left: 5px;">A</h3>
+                            </div>
+                        </div>
+                        <div class="col-3 panel">
+                            <p>Max. Power</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="max-power-panel">0</h2><h3 style="padding-left: 5px;">W</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="result-panel-section" class="row-1 no-gutters" style="width: 100%; margin: auto; display: inline-flex;">
+                        <div class="col-3 panel">
+                            <p>Released Energy</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="released-energy-panel">0</h2><h3 style="padding-left: 5px;">J</h3>
+                            </div>
+                        </div>
+                        <div class="col-3 panel">
+                            <p>Projectile Exit Energy</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="projectile-energy-panel">0</h2><h3 style="padding-left: 5px;">J</h3>
+                            </div>
+                        </div>
+                        <div class="col-3 panel">
+                            <p>Conversion Efficiency</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="conversion-efficiency-panel">0</h2><h3 style="padding-left: 5px;">%</h3>
+                            </div>
+                        </div>
+
+                        <div id="cap-panel-container" class="col-3 panel" style="display: none;">
+                            <p>Capacitor Start Energy</p>
+                            <div style="display: inline-flex;">
+                                <h2 id="cap-energy-panel">0</h2><h3 style="padding-left: 5px;">J</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                    const ctx = document.getElementById('timeseries-chart').getContext('2d');
+                    const timeseriesChart = new Chart(ctx, {
+                        type: 'line', // Change to 'line' for a line graph
+                        data: {
+                            labels: [], // Resistance values
+                            datasets: [{
+                                label: 'Position (m)',
+                                data: [],
+                                borderColor: 'yellow',
+                                tension: 0.1 // Optional: smooths the line slightly
+                            },{
+                                label: 'Velocity (m/s)',
+                                data: [],
+                                borderColor: 'orange',
+                                tension: 0.1 // Optional: smooths the line slightly
+                            },{
+                                label: 'Force (N)',
+                                data: [],
+                                borderColor: 'gray',
+                                tension: 0.1 // Optional: smooths the line slightly
+                            },{
+                                label: 'Coil Inductance (H)',
+                                data: [],
+                                borderColor: 'green',
+                                tension: 0.1 // Optional: smooths the line slightly
+                            },{
+                                label: 'Coil Current (A)',
+                                data: [],
+                                borderColor: 'cyan',
+                                tension: 0.1 // Optional: smooths the line slightly
+                            },{
+                                label: 'Source Voltage (V)',
+                                data: [],
+                                borderColor: 'cyan',
+                                tension: 0.1 // Optional: smooths the line slightly
+                            },{
+                                label: 'Power (W)',
+                                data: [],
+                                borderColor: 'cyan',
+                                tension: 0.1 // Optional: smooths the line slightly
+                            }]
+                        },
+                        options: {
+                            animation: false, // Disables all animations
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Quantity'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Time (s)'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                annotation: {
+                                }
+                            }
+                        }
+                        
+                    });
+                    /**
+                     * Adds a data point to the chart
+                     * @param {number|string} time - The value for the X-axis
+                     * @param {number} value - The value for the Y-axis
+                     * @param {number} dataset_index - Which dataset to add to (usually 0)
+                     */
+                    function addDataPointToChart (time, x, v, F, ind, I, U) {
+                        // 1. Add the new time label to the X-axis
+                        timeseriesChart.data.labels.push(time);
+                        
+                        // 2. Add the value to the specific dataset's data array
+                        timeseriesChart.data.datasets[0].data.push(x);
+                        timeseriesChart.data.datasets[1].data.push(v);
+                        timeseriesChart.data.datasets[2].data.push(F);
+                        timeseriesChart.data.datasets[3].data.push(ind);
+                        timeseriesChart.data.datasets[4].data.push(I);
+                        timeseriesChart.data.datasets[5].data.push(U);
+                        timeseriesChart.data.datasets[6].data.push(I*U);
+                        
+                        // 3. Update the chart to render the new point
+                        timeseriesChart.update();
+                    }
+                    function clearTimeseriesChart () {
+                        // 1. Clear the labels (X-axis data)
+                        timeseriesChart.data.labels = [];
+
+                        // 2. Clear data from all datasets
+                        timeseriesChart.data.datasets.forEach((dataset) => {
+                            dataset.data = [];
+                        });
+
+                        // 3. Update the chart to show the empty state
+                        timeseriesChart.update();
+                    }
+                </script>
+            </div>
+            
+        </div>
+
+        
+    </div>
+
+    
+    <script>
+
+        // Menu selection fields
+        const sourceSelect = document.getElementById('voltage_source');
+        const capacitanceGroup = document.getElementById('capacitance_group');
+        const capPanel = document.getElementById('cap-panel-container');
+        sourceSelect.addEventListener('change', function() {
+            if (this.value === 'const_source') {
+                capacitanceGroup.style.display = 'none';
+                capPanel.style.display = 'none';
+            } else {
+                capacitanceGroup.style.display = 'block';
+                capPanel.style.display = 'block';
+            }
+        });
+        const vccGroup = document.getElementById('vcc_group');
+        vccGroup.style.display = 'block';
+
+        resistivity_table = {
+            "silver": 1.59e-8,
+            "copper": 1.72e-8,
+            "gold": 2.44e-8,
+            "aluminum": 2.82e-8,
+            "tungsten": 5.60e-8,
+            "zinc": 5.90e-8,
+            "nickel": 6.99e-8,
+            "iron": 9.7e-8,
+            "platinum": 1.06e-7,
+            "tin": 1.09e-7,
+            "steel_carbon": 1.43e-7,
+            "lead": 2.2e-7,
+            "manganin": 4.82e-7,
+            "constantan": 4.9e-7,
+            "steel_stainless": 6.9e-7,
+            "nichrome": 1.1e-6,
+            "cobalt": 6.24e-8,
+            "gadolinium": 1.31e-6,
+            "steel_stainless_mag": 6.0e-7,
+            "permalloy": 1.6e-7
+        }
+
+        susceptibility_table = {
+            "silver": -2.38e-5,
+            "copper": -9.63e-6,
+            "gold": -3.44e-5,
+            "aluminum": 2.2e-5,
+            "tungsten": 8.84e-5,
+            "zinc": -1.58e-5,
+            "nickel": 600.0,
+            "iron": 5000.0,
+            "platinum": 2.57e-4,
+            "tin": -2.27e-5,
+            "steel_carbon": 100.0,
+            "lead": -1.7e-5,
+            "manganin": 1.1e-4,
+            "constantan": -1.2e-4,
+            "steel_stainless": 1.0e-3,
+            "nichrome": 1.5e-4,
+            "cobalt": 250.0,
+            "gadolinium": 180.0,
+            "steel_stainless": 40.0,
+            "permalloy": 8000.0
+        }
+
+        density_table = {
+            "silver": 10490,
+            "copper": 8940,
+            "gold": 19320,
+            "aluminum": 2700,
+            "tungsten": 19250,
+            "zinc": 7140,
+            "nickel": 8908,
+            "iron": 7874,
+            "platinum": 21450,
+            "tin": 7310,
+            "steel_carbon": 7850,
+            "lead": 11340,
+            "manganin": 8400,
+            "constantan": 8900,
+            "steel_stainless": 8000,
+            "nichrome": 8400,
+            "cobalt": 8900,
+            "gadolinium": 7900,
+            "steel_stainless": 7750,
+            "permalloy": 8700
+        }
+
+        function digits(value, n=3) {
+            const factor = 10**n;
+            return Math.round(factor*value) / factor;
+        }
+
+        function acceleration (x, gamma, mu, rho, N, L, I, R) {
+            A = L - x;
+            A2 = A ** 2;
+            B = A2 + R**2;
+            b_32 = (B)**(3/2);
+            sqrt_b = Math.sqrt(B);
+            C = Math.sqrt(x**2+R**2);
+            factor = (mu*N**2*I**2)/(4*gamma*rho*L**2);
+            return factor * ( A2/b_32 - 1/sqrt_b - x**2/b_32 + 1/C ) * ( A/sqrt_b + x/C );
+        }
+        
+        function inductance (x, mu, m, rho, L, R, N, L_air) {
+            A = L - x;
+            A2 = A ** 2;
+            B = A2 + R**2;
+            sqrt_b = Math.sqrt(B);
+            C = Math.sqrt(x**2+R**2);
+            factor = mu * m * N**2 / (2 * rho * L**2);
+            return factor * ( A/sqrt_b + x/C )**2 + L_air;
+        }
+
+        function inductance_grad (x, a, m, I) {
+            return 2 * m / (I**2) * a;
+        }
+
+        function calculate() {
+
+            
+            console.log("Calculation triggered");
+
+            // Clear the chart
+            clearTimeseriesChart ()
+            
+            // Grab parameter from the form
+            wire_material = document.getElementById('wire_material').value;
+            projectile_material = document.getElementById('projectile_material').value;
+            gamma = parseFloat( document.getElementById('gamma').value );
+            m = parseFloat( document.getElementById('mass').value );
+            mu = parseFloat( document.getElementById('permeability').value );
+            N = parseInt( document.getElementById('turns').value );
+            L = parseFloat( document.getElementById('length').value );
+            console.log("L:", L);
+            R = parseFloat( document.getElementById('radius').value );
+            Res_ext = parseFloat( document.getElementById('resistor').value );
+            theta = parseFloat( document.getElementById('thickness').value * 1e-3 );
+            vcc = parseFloat( document.getElementById('vcc').value );
+
+            // Check for voltage source (if capacitor do some preparing calculations)
+            const voltageSource = document.getElementById('voltage_source').value;
+            let capacitance = null, capacitor_charge = null, cap_energy = 0;
+            if (voltageSource != 'const_source') {
+                // Initialize capacitor charge from initial voltage
+                capacitance = parseFloat( document.getElementById('capacitance_value').value);
+                capacitor_charge = capacitance * vcc;
+                // Directly compute the start energy of the capacitor if selected.
+                cap_energy = 0.5*capacitance*vcc**2;
+                document.getElementById('cap-energy-panel').innerHTML = digits(cap_energy);
+            }
+
+
+            // Determine automatic parameters
+            chi = document.getElementById('susceptibility').value;
+            if (chi == "auto") {
+                chi = susceptibility_table[projectile_material]
+            } else {
+                chi = parseFloat(chi);
+            }
+            rho = document.getElementById('density').value;
+            if (rho == "auto") {
+                rho = density_table[projectile_material]
+            } else {
+                rho = parseFloat(rho);
+            }
+            
+            // Determine resistivity
+            xi = resistivity_table[wire_material];
+
+            // The start position is initialized as negative value
+            x0 = L/2 - Math.abs( parseFloat( document.getElementById('position').value ) );
+
+            // Also the velocity is initialized with positive direction
+            v0 = Math.abs( parseFloat( document.getElementById('velocity').value ) );
+
+            // Compute base inductance 
+            L_air = mu * N ** 2 * Math.PI * R ** 2 / L;
+
+            // Compute resistance
+            Res_coil = 8 * xi * N * R / (theta ** 2);
+            Res_total = Res_coil + Res_ext;
+
+            // Get timestep
+            dt = parseFloat( document.getElementById('timestep').value );
+
+            // Init loop parameters
+            x = x0;
+            t = 0;
+            I = 0;
+            v = v0;
+            a = 0;
+
+            let L_ind, L_prime;
+
+            iterations = 0;
+            render_n = parseInt( document.getElementById('render-steps').value );
+
+            max_current = 0; // Track maximum current
+            released_energy = 0; // start with initial charge energy if capacitor is selected otherwise will be zero
+
+            while (true) {
+
+                // 1. Compute inductance
+                let L_ind = inductance(x, mu, m, rho, L, R, N, L_air);
+                if (t == 0) {
+                    L_prime = 0;
+                } else {
+                    L_prime = inductance_grad(x, a, m, I);
+                }
+                
+
+                // 2. Compute current
+                delta_I = (vcc - (Res_total + L_prime * v) * I)  * dt / L_ind;
+                I = I + delta_I;
+
+                // Override the max current
+                if (I > max_current) {max_current = I};
+
+                // Accumulate the energy quant released
+                released_energy += I * vcc * dt;
+
+                // Check power source 
+                if (capacitance) {
+                    let dV = (I) * dt / capacitance;
+                    vcc -= dV;
+                }
+
+                // Output
+                console.log(`Time: ${digits(t, 4)}s  Position: ${digits(x)}m  Velocity: ${digits(v)}m/s  Force ${digits(m*a)}N  Inductance: ${digits(L_ind)}H  Current: ${digits(I)}A`);
+                // Plot
+                if (iterations % render_n == 0) {
+                    addDataPointToChart(digits(t, 4), x, v, m*a, L_ind, I, vcc);
+                }
+
+                // Stop condition when solenoid center is reached
+                // if ( t >= 1 ) break;
+                if ( x >= L / 2 ) break;
+                
+                // 3. Leapfrog
+                a = acceleration(x, gamma, mu, rho, N, L, I, R);
+                if (t == 0) {
+                    v = v0 + a * dt / 2;
+                } else {
+                    v += a * dt;
+                }
+                x += v * dt;
+                
+                // 5. Increment time
+                t += dt;
+                iterations += 1;
+            }
+
+            // Calculate final quantities
+            projectile_energy =  0.5*m*v**2; // final exit energy of the projectile based on kinematics
+
+            // Show outputs in panels
+            document.getElementById('exit-vel-panel').innerHTML = digits(v);
+            document.getElementById('total-lat-panel').innerHTML = digits(t);
+            document.getElementById('max-current-panel').innerHTML = digits(max_current);
+            document.getElementById('max-power-panel').innerHTML = digits(max_current ** 2 * Res_total);
+            document.getElementById('released-energy-panel').innerHTML = digits(released_energy);
+            document.getElementById('projectile-energy-panel').innerHTML = digits(projectile_energy);
+            document.getElementById('conversion-efficiency-panel').innerHTML = digits(100*projectile_energy/released_energy);
+            
+        }
+    </script>
+</body>
+</html>
